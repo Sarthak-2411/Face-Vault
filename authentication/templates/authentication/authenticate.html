@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/static/authentication/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="/static/home_page/img/folder.svg" type="image/x-icon">
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <div class="title-text">
+      <div class="title login">
+        Login/Signup</div>
+    </div>
+
+    <div class="form-inner">
+      <form action="{% url 'authenticate' %}" method='POST' id='login_form' class="login" style="margin-top: 40px;">
+        {% csrf_token %}
+        <div class="field">    
+            
+          <input type="email" placeholder="Enter your Email" name='user_email' required>
+        </div>
+        <div class="field btn">
+          <div class="btn-layer">
+          </div>
+          <input type="submit" value="Proceed">
+          <!-- <button id='submit_button' type="submit" value="Proceed" ></button> -->
+        </div>
+        <!-- Note: If you have come first time then you will be redirected to capture image -->
+      </form>
+      <script>
+        
+      </script>
+    </div>
+  </div>
+  </div>
+</body>
+
+</html>

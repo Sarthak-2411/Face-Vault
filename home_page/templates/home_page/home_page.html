@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Face vault</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- fav icon -->
+    <link rel="shortcut icon" href="/static/home_page/img/folder.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/home_page/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+</head>
+
+<body class="slide-in-elliptic-top-fwd">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand blink-1" href="#" id="website_name">
+            <img src="/static/home_page/img/vault_icon.svg" width="30" height="30"
+                class="d-inline-block align-top" alt="" style="filter: invert(1);">
+            Face vault</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse mt-sm-3 mt-md-3 mt-lg-0 d-lg-flex justify-content-lg-between"
+            id="navbarNavDropdown">
+            <span class="form-inline my-2 my-lg-0 d-sm-none d-md-none d-lg-block">
+                <span></span>
+            </span>
+            <ul class="navbar-nav">
+                <li class="nav-item active"></li>
+                   
+                    <form method="post" action="{% url 'upload_file' %}" enctype='multipart/form-data' id='upload_form'>
+                        {% csrf_token %}
+                        <input type="file" name="file" id="file" class="d-none">
+                    </form>
+                    <div>
+                        <div class="btn btn-outline-light" onclick="openfile()" style="cursor: pointer;"><img
+                            src="/static/home_page/img/cloud_computing.svg" height="25" alt="" >
+                        Upload file
+                        </div>
+                    </div>
+                        
+                </li>
+            </ul>
+            <span class="form-inline my-2 my-lg-0">
+
+                <div class="dropdown show">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Welcome, {{request.user.username}}
+                    </a>
+                  
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                      
+                    </div>
+                  </div>
+            </span>
+        </div>
+    </nav>    
+    <span id="text">
+        <div class="bi bi-cloud-arrow-up text-center h2 mt-5"> Uploaded files</div>
+    </span><br>
+    <div class="files_display m-2 m-lg-5">
+        <div class="table-responsive  p-3 text-center table-hover m-0 m-sm-0 m-md-2 m-lg-2">
+            <!-- <span id="text">
+                <div class="bi bi-cloud-arrow-up text-center h2 mt-3"> Uploaded files</div>
+            </span><br> -->
+            <table class="table">
+                <thead>
+                    <tr style="font-size: large;">
+                        <th scope="col" >Download</th>
+                        <th scope="col" style="text-align: left;">Name</th>
+                        <th scope="col">Date Uploaded</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                {% for x in files %}                    
+                    <tbody style="font-size: 17px;">
+                        <tr>
+                            <td data-label="Download"><a href="/download/{{x.name}}" style='cursor:pointer;color:black;font-size:1.1em;' ><i class="bi bi-download"></i></a></td>
+                            <td data-label="Service name" style="text-align: left;">&nbsp;<a href="/open/{{x.name}}" style='cursor:pointer;color:black;font-size:1.1em;'>{{x.name}}</a></td><!--<i class="bi bi-file-pdf-fill"></i>-->
+                            <td data-label="Serviced date">{{x.date_uploaded}}</td>
+                            <td data-label="Size">{{x.size}}</td>
+                            <td data-label="Edit"><a id = '{{x.name}}' style='background-color:white;border:none;cursor:pointer;' onclick="addfilename(this.id)"  class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop" >
+                                <i class="bi bi-pen-fill"></i>
+                            </a></td>                
+                            
+                            <td data-label="Delete"><a onclick ='confirm_delete("{{x.name}}")' style='cursor:pointer;' class="btn btn"><i class="bi bi-trash-fill"></i></a></td>
+                                 
+                            <script>
+                                function confirm_delete(file)
+                                {
+                                    var b = confirm("Are you sure you want to delete ?");
+                                    
+                                    if(b)
+                                    {
+                                        window.location.href="/delete/"+file;
+                                    }
+                                    
+                                }
+                            </script>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+
+         <!-- Button trigger modal -->  
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" >
+          <h5 class="modal-title" id="staticBackdropLabel">Rename File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id='body_of_modal'>
+            <input type="text" id='new_name' class="w-100">
+        </div>
+          <script>
+            let old_file_name;
+
+              function addfilename(old_name)
+              {
+               
+                //////////////
+                input_field = document.getElementById('new_name');
+                input_field.value = old_name.split('.')[0];                               
+                old_file_name = old_name;
+                
+              }
+              
+              
+          </script>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" style = 'background-color:black' onclick="editName()">Rename</button>
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+<script>
+    function openfile() {
+        var file = document.getElementById("file").click();
+       
+        $('#file').change(function()        
+        {
+            if($('this').val != null)
+            {
+                document.getElementById('upload_form').submit();
+            }           
+        });
+        //document.getElementById('upload_form').submit();
+    }
+    // contextarea disabled
+    // window.addEventListener("contextmenu", e => e.preventDefault());
+
+    function editName()
+    {
+        new_name = document.getElementById('new_name').value;
+        new_name = new_name.trim()
+        if(new_name ==''){
+            alert('Blank Name');
+        }
+        else if(new_name.includes('.'))
+        {
+            alert('Extension cannot be changed');
+        }
+        else if(new_name == old_file_name.split('.')[0])
+        {
+            
+        }
+        else{
+            format = old_file_name.split('.')[1];
+            
+            window.location.href='/edit/'+old_file_name+'/'+new_name+'.'+format;
+        }   
+       
+    }
+</script>
+
+</html>

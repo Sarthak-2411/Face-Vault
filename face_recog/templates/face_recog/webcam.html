@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/face_recog/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="/static/home_page/img/folder.svg" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>Web-cam</title>
+</head>
+<script>
+    alert('{{msg}}');
+</script>
+<body>
+    <div class="webcam">
+       
+        <div class="video">
+            <video id="video" autoplay></video>
+        </div>
+
+        <!-- Start and stop button -->
+        <div class="webcam-control">
+            
+            <a  class="btn-stop" onclick="proceed()" id='proceedbtn'>
+                Capture and Proceed                
+            </a>          
+            
+        </div>
+        <!-- <div>
+            OR send email to login directly
+        </div> -->
+    </div>
+
+</body>
+<script>
+    // Stop button code
+    var StopWebCam = function () {
+        var stream = video.srcObject;
+        var tracks = stream.getTracks();
+
+        for (let i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            track.stop();
+        }
+        video.srcObject = null;
+    }
+    function proceed()
+    {
+        document.getElementById('proceedbtn').innerHTML = "Capturing...";
+        StopWebCam();
+        window.location.href = "{% url 'capture_face' %}";
+    }
+
+    // Video start and access code
+
+    var start = function () {
+        var video = document.getElementById("video");
+        vendorURL = window.URL || window.webkitURL;
+
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                }).catch(function (error) {
+                    console.log("Something went wrong");
+                });
+        }
+    }
+    $(function () { start(); });
+</script>
+</html>

@@ -1,0 +1,32 @@
+
+.webcam
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+    height: 90vh;
+    
+}
+.webcam-control > a{
+    text-decoration: none;
+    color: white;
+    background: #000;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    padding: 10px 50px;
+    margin: 10px;
+    border-radius: 5px;
+}
+.webcam-control
+{
+    margin-top: 20px;
+}
+
+
+/* .webcam-control a:hover
+{
+    box-shadow: 1px 1px 2px #f9f9f9;
+    color: #fff;
+} */
+

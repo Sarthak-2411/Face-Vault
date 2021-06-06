@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/face_recog/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="/static/home_page/img/folder.svg" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>Web-cam</title>
+</head>
+<script>
+    //alert("{{msg}}");
+    
+</script>
+<body>
+    <div class="alert alert-warning" role="alert" style="text-align: center;"> 
+       <h4>{{msg}}</h4>
+      </div>
+    <div class="webcam">
+       
+        <div class="video" style="text-align: center;">
+            <video id="video" autoplay></video>
+        </div>
+
+        <!-- Start and stop button -->
+        <div class="webcam-control">
+            <!-- <a href="#!" class="btn-start" onclick="start()">
+                <i class="fa fa-camera"></i></a> -->
+            <a  class="btn-stop" onclick="proceed()">
+                Capture and Proceed
+                <!-- <i class="fa fa-stop-circle" aria-hidden="true"></i> -->
+            </a>
+           
+            <form method="POST" action="{% url 'captureandstore' 0 %}" enctype='multipart/form-data' id='jadu_form' style="display:none;"> <!---->
+                {% csrf_token %}
+                <!-- <input type="text" name='myface' id='jadu_img'> -->
+                <input type="file" name="myface" id="jadu_img" accept="image/jpg" style="display:none;">             
+            </form>
+        </div>
+       
+    </div>
+
+</body>
+<script>
+    function dataURItoBlob(dataURI) {
+        // convert base64 to raw binary data held in a string
+        // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+        var byteString = atob(dataURI.split(',')[1]);      
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]      
+        // write the bytes of the string to an ArrayBuffer
+        var ab = new ArrayBuffer(byteString.length);      
+        // create a view into the buffer
+        var ia = new Uint8Array(ab);      
+        // set the bytes of the buffer to the correct values
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+      
+        // write the ArrayBuffer to a blob, and you're done
+        var blob = new Blob([ab], {type: mimeString});
+        return blob;
+      
+      }
+    // Stop button code
+    var StopWebCam = function () {
+        var stream = video.srcObject;
+        var tracks = stream.getTracks();
+
+        for (let i = 0; i < tracks.length; i++) {
+            var track = tracks[i];
+            track.stop();
+        }
+        video.srcObject = null;
+    }
+    function proceed()
+    {
+        var canvas = document.createElement('canvas');
+        var width = video.clientWidth;
+        var height = video.clientWidth;
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(video, 0, 1, width, height);
+        var data = canvas.toDataURL('image/jpg');
+        var dataURL = canvas.toDataURL();
+        var blob = dataURItoBlob(dataURL);
+        
+        //photo.setAttribute('src', data);
+        image_form = document.getElementById('jadu_img');
+        console.log(blob);
+        let file = new File([blob], "img.jpg",{type:"image/jpeg", lastModified:new Date().getTime()});
+        var container = new DataTransfer();
+        container.items.add(file);
+        image_form.files = container.files;
+
+        var jadu_form = document.getElementById('jadu_form');
+        jadu_form.submit();   
+
+        StopWebCam();
+    }
+
+    // Video start and access code
+
+    var start = function () {
+        var video = document.getElementById("video");
+        vendorURL = window.URL || window.webkitURL;
+
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                }).catch(function (error) {
+                    alert('Access to camera is denied please give access');
+                    window.location.reload();
+                });
+        }
+        video.style.width = '90%';
+       
+    }
+    $(function () { start(); });
+</script>
+</html>
